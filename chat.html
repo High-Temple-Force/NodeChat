@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>socket.io chat</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-1.11.1.js"></script>
+    <link type="text/css" rel="stylesheet" href="style/style.css" />
+</head>
+<body>
+    <div id="your_container">
+
+        <!-- チャットの外側部分① -->
+        <div id="bms_messages_container">
+            <!-- ヘッダー部分② -->
+            <div id="bms_chat_header">
+                <!--ステータス-->
+                <div id="bms_chat_user_status">
+                    <!--ステータスアイコン-->
+                    <div id="bms_status_icon">●</div>
+                    <!--ユーザー名-->
+                    <div id="bms_chat_user_name">ユーザー</div>
+                </div>
+            </div>
+
+            <!-- タイムライン部分③ -->
+            <div id="bms_messages">
+
+                
+            </div>
+
+            <!-- テキストボックス、送信ボタン④ -->
+            <form id="bms_send" action="#">
+                <textarea id="bms_send_message"></textarea>
+                <button id="bms_send_btn">Send</button>
+            </form>
+        </div>
+    </div>
+    <script>
+        var socketio = io();
+        $(function(){
+            $('#bms_send').submit(function(){
+                socketio.emit('message', $('#bms_send_message').val());
+                msg = $('#bms_send_message').val();
+                var data = '<div class="bms_message bms_right"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text">' + msg + '</div></div></div></div><div class="bms_clear"></div>';
+                $('#bms_messages').append($(data));
+                $('#bms_send_message').val('');
+                return false;
+            });
+            socketio.on('message',function(msg){
+                var data = '<div class="bms_message bms_left"><div class="bms_message_box"><div class="bms_message_content"><div class="bms_message_text">' + msg + '</div></div></div></div><div class="bms_clear"></div>';
+                $('#bms_messages').append($(data));
+            });
+        });
+    </script>
+</body>
+</html>
